@@ -1,0 +1,25 @@
+{
+  "name": "game",
+  "version": "1.0.0",
+  "description": "Game",
+  "license": "UNLICENSED",
+  "scripts": {
+    "dev": "webpack --mode development && webpack-dev-server --mode development",
+    "build": "webpack --mode production && webpack-dev-server --mode production"
+  },
+  "dependencies": {
+    "phaser": "3.20.1"
+  },
+  "devDependencies": {
+    "expose-loader": "0.7.5",
+    "ts-loader": "6.2.1",
+    "typescript": "3.7.2",
+    "webpack": "4.41.2",
+    "webpack-cli": "3.3.10",
+    "webpack-dev-server": "3.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SoftwayMedicalEasylink/game.git"
+  }
+}
