@@ -1,23 +1,31 @@
-/**
- * @author       Digitsensitive <digit.sensitivee@gmail.com>
- * @copyright    2018 - 2019 digitsensitive
- * @license      {@link https://github.com/digitsensitive/phaser3-typescript/blob/master/LICENSE.md | MIT License}
- */
+import { Game } from "phaser";
 
 export class MainScene extends Phaser.Scene {
-  private phaserSprite: Phaser.GameObjects.Sprite;
+  phaserSprite: Phaser.GameObjects.Sprite;
+  upKey: Phaser.Input.Keyboard.Key;
 
   constructor() {
-    super({
-      key: "MainScene"
-    });
+    super('MainScene');
   }
 
   preload(): void {
-    this.load.image("myImage", "../assets/images/phaser.png");
+    this.load.image("myImage", "./assets/images/phaser.png");
+    this.upKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
   }
 
   create(): void {
     this.phaserSprite = this.add.sprite(400, 300, "myImage");
+  }
+
+  update(): void {
+    this.input.on('pointerup', (pointer: Phaser.Input.Pointer) => {
+      if (pointer.leftButtonReleased()) {
+        this.scene.start('OtherScene');
+      }
+    })
+
+    if (this.upKey.isDown) {
+      this.phaserSprite.y -= 1;
+    }
   }
 }
