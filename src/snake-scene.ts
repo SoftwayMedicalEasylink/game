@@ -1,3 +1,5 @@
+const VELOCITY = 32;
+
 export class SnakeScene extends Phaser.Scene {
   logo: Phaser.GameObjects.Sprite;
   endKey: Phaser.Input.Keyboard.Key;
@@ -8,6 +10,9 @@ export class SnakeScene extends Phaser.Scene {
   score = 0;
   capsule;
   scoreText;
+  velocityX = 0;
+  velocityY = 0;
+  ground;
 
   constructor() {
     super('GameSnake');
@@ -23,12 +28,12 @@ export class SnakeScene extends Phaser.Scene {
 
   create(): void {
     var chess = this.add.image(256, 256, 'chess');
-    var ground = this.physics.add.staticGroup();
-    ground.create(256, 527, 'ground');
-    this.player = this.physics.add.sprite(48, 271, 'cube');
+    this.ground = this.physics.add.staticGroup();
+    this.ground.create(256, 527, 'ground');
+    this.player = this.physics.add.sprite(48, 272, 'cube');
     this.player.scale = 0.25;
     this.player.setCollideWorldBounds(true);
-    this.physics.add.collider(this.player, ground);
+    this.physics.add.collider(this.player, this.ground, this.collides(this.player, this.ground));
 
     this.player.setBounce(0);
     this.cursors = this.input.keyboard.createCursorKeys()
@@ -46,7 +51,19 @@ export class SnakeScene extends Phaser.Scene {
     }; */
     this.physics.add.overlap(this.player, this.capsule);
     this.scoreText = this.add.text(16, 512, 'score: 0', { fontSize: '32px', fill: '#000' });
+    this.time.addEvent({
+      delay: 500,
+      loop: true,
+      callback: this.moveSnake,
+      callbackScope: this
+    });
   };
+  collides (player:any, ground:any): ArcadePhysicsCallback {
+    return (player, ground) => {
+      this.velocityY = 0;
+    }
+  }
+  
 
   update() {
     if (this.gameOver) {
@@ -55,39 +72,41 @@ export class SnakeScene extends Phaser.Scene {
       this.player.setVelocityX(0);
       this.player.setVelocityY(0);
       return;
-    };
+    }
+
     if (this.endKey.isDown) {
       this.player.setTint(this.color.random(50).color);
     };
     if (this.cursors.left.isDown) {
-      this.player.setVelocityX(-100);
-      this.player.setVelocityY(0);
+      this.velocityX = -VELOCITY;
+      this.velocityY = 0;
     };
     if (this.cursors.right.isDown) {
-      this.player.setVelocityX(100);
-      this.player.setVelocityY(0);
+      this.velocityX = VELOCITY;
+      this.velocityY = 0;
     };
     if (this.cursors.up.isDown) {
-      this.player.setVelocityY(-100);
-      this.player.setVelocityX(0);
+      this.velocityX = 0;
+      this.velocityY = -VELOCITY;
     };
     if (this.cursors.down.isDown) {
-      this.player.setVelocityY(100);
-      this.player.setVelocityX(0);
+      this.velocityX = 0;
+      this.velocityY = VELOCITY;
     };
-    function collectCapsule(player, capsule) {
+    /*if (this.player, this.ground) {
+      collides(): void {
+        this.Ypos = 0;
+      };
+    }*/
+    /* collectCapsule(player, capsule): void {
 
       capsule.disableBody(true, true);
       this.score += 1;
       this.scoreText.setText('Score: ' + this.score)
-    };
+    };   */
 };
-
-/*function HitGround(player, ground) {
-  gameOver = true;
-  }
-  function sUP () {
-  player.setVelocityX(-50);
-  player.setVelocityY(0);
-} */
+  moveSnake(): void {
+    this.player.x += this.velocityX;
+    this.player.y += this.velocityY;
+  };
 }
