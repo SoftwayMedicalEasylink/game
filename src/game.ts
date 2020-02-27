@@ -4,8 +4,8 @@ import { MainScene } from "./main-scene";
 import { OtherScene } from "./other-scene";
 
 new Phaser.Game({
-  width: 512,
-  height: 544,
+  width: 514,
+  height: 546,
   backgroundColor: 'fff',
   type: Phaser.AUTO,
   parent: "game",
