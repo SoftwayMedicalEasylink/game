@@ -13,7 +13,7 @@ export class OtherScene extends Phaser.Scene {
   
   preload(): void {
     this.load.image("myImage2", "./assets/images/softway.png");
-    this.load.image("s", "./assets/images/s.png");
+    this.load.image("Snake", "./assets/images/Snake.png");
     this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC );
     this.UPKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP );
     this.LEFTKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT );
@@ -24,7 +24,7 @@ export class OtherScene extends Phaser.Scene {
   create(): void {
     const logo = this.add.sprite(250, 300, "myImage2");
     logo.scale = 0.5;
-    this.snake = this.add.sprite(104, 266, "s");
+    this.snake = this.add.sprite(104, 266, "Snake");
     this.snake.scale = 0.12;
     this.time.addEvent({
       delay: 500,
