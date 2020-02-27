@@ -11,10 +11,10 @@ export class SnakeScene extends Phaser.Scene {
   scoreText;
   velocityX = 0;
   velocityY = 0;
-  ground;
   side;
   VELOCITY = 32;
   DeadSnake;
+  tile = 32;
 
   constructor() {
     super('GameSnake');
@@ -31,25 +31,26 @@ export class SnakeScene extends Phaser.Scene {
   }
 
   create(): void {
-    var chess = this.add.image(257, 257, 'chess');
-    this.ground = this.physics.add.staticGroup();
-    this.ground.create(257, 529, 'ground');
-    this.ground.create(257, -15, 'ground');
-    this.side = this.physics.add.staticGroup();
-    this.side.create(-15, 257, 'side');
-    this.side.create(529, 257, 'side');
-    this.player = this.physics.add.sprite(49, 273, 'cube');
+    var chess = this.add.image(0, 0, 'chess').setOrigin(0);
+    var Walls = this.physics.add.staticGroup();
+    var groundUp = this.add.image(this.tile * 0, this.tile * -1, 'ground').setOrigin(0);
+    var groundDown = this.add.image(this.tile * 0, this.tile * 16, 'ground').setOrigin(0);
+    var sideLeft = this.add.image(this.tile * -1, this.tile * 0, 'side').setOrigin(0);
+    var sideRight = this.add.image(this.tile * 16, this.tile * 0, 'side').setOrigin(0);
+    Walls.add(groundUp);
+    Walls.add(groundDown);
+    Walls.add(sideLeft);
+    Walls.add(sideRight);
+    this.player = this.physics.add.sprite(this.tile, this.tile * 8, 'cube').setOrigin(0);
     this.player.scale = 0.25;
-    this.player.setCollideWorldBounds(true);
-    this.physics.add.collider(this.player, this.ground, this.collides(this.player, this.ground));
-    this.physics.add.collider(this.player, this.side, this.collides2(this.player, this.side));
-
+    this.player.setCollideWorldBounds(false);
+    this.physics.add.collider(this.player, Walls, this.collides(this.player, Walls));
     this.player.setBounce(0);
     this.cursors = this.input.keyboard.createCursorKeys()
     this.physics.add.overlap(this.player, this.capsule);
     this.scoreText = this.add.text(16, 514, 'score: 0', { fontSize: '32px', fill: '#000' });
     this.time.addEvent({
-      delay: 250,
+      delay: 125,
       loop: true,
       callback: this.moveSnake,
       callbackScope: this
@@ -57,11 +58,6 @@ export class SnakeScene extends Phaser.Scene {
   };
   collides (player:any, ground:any): ArcadePhysicsCallback {
     return (player, ground) => {
-      this.gameOver = true
-    }
-  }
-  collides2 (player:any, side:any): ArcadePhysicsCallback {
-    return (player, side) => {
       this.gameOver = true
     }
   }
