@@ -1,16 +1,13 @@
-var player;
-var ground;
-var chess;
-var cursors;
-var gameOver = false;
-var color = new Phaser.Display.Color();
-var score = 0;
-var capsule;
-var scoreText;
-
 export class SnakeScene extends Phaser.Scene {
   logo: Phaser.GameObjects.Sprite;
   endKey: Phaser.Input.Keyboard.Key;
+  player: Phaser.Physics.Arcade.Sprite;
+  cursors;
+  gameOver;
+  color = new Phaser.Display.Color();
+  score = 0;
+  capsule;
+  scoreText;
 
   constructor() {
     super('GameSnake');
@@ -25,15 +22,16 @@ export class SnakeScene extends Phaser.Scene {
   }
 
   create(): void {
-    chess = this.add.image(256, 255, 'chess');
-    ground = this.physics.add.staticGroup();
-    ground.create(256, 255, 'ground');
-    player = this.physics.add.sprite(48, 271, 'cube');
-    player.scale = 0.25;
-    player.setCollideWorldBounds(true);
-    this.physics.add.collider(player, ground);
-    player.setBounce(0);
-    cursors = this.input.keyboard.createCursorKeys()
+    var chess = this.add.image(256, 256, 'chess');
+    var ground = this.physics.add.staticGroup();
+    ground.create(256, 527, 'ground');
+    this.player = this.physics.add.sprite(48, 271, 'cube');
+    this.player.scale = 0.25;
+    this.player.setCollideWorldBounds(true);
+    this.physics.add.collider(this.player, ground);
+
+    this.player.setBounce(0);
+    this.cursors = this.input.keyboard.createCursorKeys()
     /*function Food (scene, x, y)
     {
         Phaser.GameObjects.Image.call(this, scene)
@@ -46,42 +44,42 @@ export class SnakeScene extends Phaser.Scene {
    
         scene.children.add(this);
     }; */
-    this.physics.add.overlap(player, capsule);
-    scoreText = this.add.text(16, 512, 'score: 0', { fontSize: '32px', fill: '#000' });
+    this.physics.add.overlap(this.player, this.capsule);
+    this.scoreText = this.add.text(16, 512, 'score: 0', { fontSize: '32px', fill: '#000' });
   };
 
   update() {
-    if (gameOver) {
-      player.disableBody(true, true);
+    if (this.gameOver) {
+      this.player.disableBody(true, true);
       this.add.text(0, 260, 'GAME OVER', { fontSize: '94px', fill: '#DA3A19' });
-      player.setVelocityX(0);
-      player.setVelocityY(0);
+      this.player.setVelocityX(0);
+      this.player.setVelocityY(0);
       return;
     };
     if (this.endKey.isDown) {
-      player.setTint(color.random(50));
+      this.player.setTint(this.color.random(50).color);
     };
-    if (cursors.left.isDown) {
-      player.setVelocityX(-100);
-      player.setVelocityY(0);
+    if (this.cursors.left.isDown) {
+      this.player.setVelocityX(-100);
+      this.player.setVelocityY(0);
     };
-    if (cursors.right.isDown) {
-      player.setVelocityX(100);
-      player.setVelocityY(0);
+    if (this.cursors.right.isDown) {
+      this.player.setVelocityX(100);
+      this.player.setVelocityY(0);
     };
-    if (cursors.up.isDown) {
-      player.setVelocityY(-100);
-      player.setVelocityX(0);
+    if (this.cursors.up.isDown) {
+      this.player.setVelocityY(-100);
+      this.player.setVelocityX(0);
     };
-    if (cursors.down.isDown) {
-      player.setVelocityY(100);
-      player.setVelocityX(0);
+    if (this.cursors.down.isDown) {
+      this.player.setVelocityY(100);
+      this.player.setVelocityX(0);
     };
     function collectCapsule(player, capsule) {
 
       capsule.disableBody(true, true);
-      score += 1;
-      scoreText.setText('Score: ' + score)
+      this.score += 1;
+      this.scoreText.setText('Score: ' + this.score)
     };
 };
 
