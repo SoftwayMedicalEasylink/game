@@ -1,7 +1,7 @@
 import "phaser";
-import { SnakeScene } from "./snake-scene";
 import { MainScene } from "./main-scene";
 import { OtherScene } from "./other-scene";
+import { SnakeScene } from "./snake-scene";
 
 new Phaser.Game({
   width: 512,
