@@ -39,7 +39,7 @@ export class OtherScene extends Phaser.Scene {
       this.scene.start('MainScene');
     };
     if (this.UPKey.isDown || this.LEFTKey.isDown || this.DOWNKey.isDown || this.RIGHTKey.isDown) {
-      this.scene.start('GameSnake');
+      this.scene.start('SnakeScene');
     };
   };
   moveSnake(): void {

@@ -1,7 +1,7 @@
-
 export class SnakeScene extends Phaser.Scene {
   logo: Phaser.GameObjects.Sprite;
   endKey: Phaser.Input.Keyboard.Key;
+  escKey: Phaser.Input.Keyboard.Key;
   player: Phaser.Physics.Arcade.Sprite;
   cursors;
   gameOver;
@@ -15,9 +15,10 @@ export class SnakeScene extends Phaser.Scene {
   VELOCITY = 32;
   DeadSnake;
   tile = 32;
+  Speed = 125;
 
   constructor() {
-    super('GameSnake');
+    super('SnakeScene');
   }
 
   preload(): void {
@@ -28,6 +29,7 @@ export class SnakeScene extends Phaser.Scene {
     this.load.image('side', "./assets/images/side.png");
     this.load.image('DeadSnake', "./assets/images/DeadSnake.png");
     this.endKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.END);
+    this.escKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ESC);
   }
 
   create(): void {
@@ -50,20 +52,25 @@ export class SnakeScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.capsule);
     this.scoreText = this.add.text(16, 514, 'score: 0', { fontSize: '32px', fill: '#000' });
     this.time.addEvent({
-      delay: 125,
+      delay: this.Speed,
       loop: true,
       callback: this.moveSnake,
       callbackScope: this
     });
   };
+
   collides (player:any, ground:any): ArcadePhysicsCallback {
     return (player, ground) => {
       this.gameOver = true
     }
   }
   
-
   update() {
+    if (this.escKey.isDown) {
+      this.player.x += this.tile;
+      this.player.y += this.tile * 8;
+      this.scene.start('SnakeScene');
+    };
     if (this.gameOver) {
       this.player.disableBody(true, true);
       this.add.text(0, 150, 'GAME OVER', { fontSize: '94px', fill: '#DA3A19' });
