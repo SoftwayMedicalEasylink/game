@@ -1,6 +1,7 @@
 import "phaser";
 import { MainScene } from "./main-scene";
 import { OtherScene } from "./other-scene";
+import { RestartScene } from "./restart-scene";
 import { SnakeScene } from "./snake-scene";
 
 new Phaser.Game({
@@ -16,5 +17,5 @@ new Phaser.Game({
       debug: false
     }
   },
-  scene: [ MainScene, OtherScene, SnakeScene ]
+  scene: [ MainScene, OtherScene, SnakeScene, RestartScene ]
 });

@@ -35,7 +35,6 @@ export class SnakeScene extends Phaser.Scene {
   }
 
   create(): void {
-    console.log("create snake")
     this.chess = this.add.image(0, 0, 'chess').setOrigin(0);
     var Walls = this.physics.add.staticGroup();
     var groundUp = this.add.image(this.tile * 0, this.tile * -1, 'ground').setOrigin(0);
@@ -112,6 +111,10 @@ export class SnakeScene extends Phaser.Scene {
       this.add.text(30, 230, 'Press ' + 'SPACE' + ' to restart', { fontSize: '34px', fill: '#870000', });
       this.DeadSnake = this.add.image(321, 321, 'DeadSnake');
       this.DeadSnake.scale = 0.25;
+      if (this.SpaceKey.isDown) {
+        this.scene.manager.stop('SnakeScene');
+        this.scene.manager.start('RestartScene');
+      }
       return;
     }
     if (this.score === 30) {

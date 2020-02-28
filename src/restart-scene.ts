@@ -1,3 +1,5 @@
+import { SnakeScene } from "./snake-scene";
+
 export class RestartScene extends Phaser.Scene {
   SpaceKey: Phaser.Input.Keyboard.Key;
 
@@ -11,14 +13,14 @@ export class RestartScene extends Phaser.Scene {
 
   create(): void {
     this.SpaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.scene.manager.remove('SnakeScene');
   }
   
   update(): void {
-    if (this.SpaceKey.isDown) {
-      this.scene.remove('PouetScene');
-      this.scene.start('PouetScene');
-    };
-
+    this.scene.manager.stop('RestartScene');
+    setTimeout(() => {
+      this.scene.manager.add('SnakeScene', new SnakeScene(), true);
+    }, 200);
   }
 
 }
