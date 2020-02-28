@@ -88,7 +88,6 @@ export class SnakeScene extends Phaser.Scene {
       capsule.disableBody(true, true);
       this.score += 10;
       this.scoreText.setText('Score: ' + this.score)
-      //if (this.capusle.countActive(true) === 0) {     }
     }
   }
 
