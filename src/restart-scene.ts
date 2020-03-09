@@ -1,8 +1,7 @@
 import { SnakeScene } from "./snake-scene";
 
 export class RestartScene extends Phaser.Scene {
-  SpaceKey: Phaser.Input.Keyboard.Key;
-
+  
   constructor() {
     super({ key: 'RestartScene' });
   }
@@ -12,7 +11,6 @@ export class RestartScene extends Phaser.Scene {
   }
 
   create(): void {
-    this.SpaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.scene.manager.remove('SnakeScene');
   }
   

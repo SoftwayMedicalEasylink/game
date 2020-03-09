@@ -44,6 +44,5 @@ export class OtherScene extends Phaser.Scene {
   };
   moveSnake(): void {
     this.snake.x += 0;
-
   };
 };
