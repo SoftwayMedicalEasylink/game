@@ -19,6 +19,10 @@ export class SnakeScene extends Phaser.Scene {
   capsule: Phaser.Physics.Arcade.Sprite;
   status = 'playing';
   restartText: Phaser.GameObjects.Text;
+  QKey: Phaser.Input.Keyboard.Key;
+  ZKey: Phaser.Input.Keyboard.Key;
+  SKey: Phaser.Input.Keyboard.Key;
+  DKey: Phaser.Input.Keyboard.Key;
 
   constructor() {
     super({ key: 'SnakeScene' });
@@ -32,6 +36,10 @@ export class SnakeScene extends Phaser.Scene {
     this.load.image('Wallside', "./assets/images/side.png");
     this.load.image('DeadSnake', "./assets/images/DeadSnake.png");
     this.SpaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+    this.ZKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z );
+    this.QKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q );
+    this.SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S );
+    this.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D );
   }
 
   create(): void {
@@ -64,14 +72,6 @@ export class SnakeScene extends Phaser.Scene {
     const capsule = this.physics.add.sprite(this.tile * 11, this.tile * 8, 'capsule').setOrigin(0);
           capsule.scale = 0.25;
           this.physics.add.overlap(this.player, capsule, this.collectCapsule());
-    /*this.time.addEvent({
-      delay: 200,
-      loop: true,
-      callback: this.restart,         //Blink text: SPACE 
-      callbackScope: this
-    });*/
-    // this.player.setCollideWorldBounds(true);
-
   };
 
   collectCapsule(): ArcadePhysicsCallback {
@@ -82,13 +82,13 @@ export class SnakeScene extends Phaser.Scene {
       this.scoreText.setText('Score: ' + this.score)
     }
   }
-
+  
   collides(player: any, ground: any): ArcadePhysicsCallback {
     return (player, ground) => {
       this.gameOver = true
     }
   }
-
+  
   blink(): string {
     if (this.time.now % 1000 < 500) {
       return "SPACE";
@@ -97,7 +97,7 @@ export class SnakeScene extends Phaser.Scene {
       return "     ";
     }
   }
-
+  
   update() {
     if (this.gameOver) {
       if (this.status !== 'gameover') {
@@ -111,7 +111,7 @@ export class SnakeScene extends Phaser.Scene {
         this.restartText = this.add.text(30, 230, 'Press ' + this.blink() + ' to restart', { fontSize: '34px', fill: '#870000', });
         this.DeadSnake = this.add.image(321, 321, 'DeadSnake');
         this.DeadSnake.scale = 0.25;
-        }
+      }
       this.restartText.setText('Press ' + this.blink() + ' to restart');
       if (this.SpaceKey.isDown) {
         this.scene.manager.stop('SnakeScene');
@@ -206,7 +206,7 @@ export class SnakeScene extends Phaser.Scene {
         });
       }
     };
-      if (this.score === 102) {
+    if (this.score === 102) {
       this.chess.setTint();
       this.player.setTint();
       this.Speed = 60;
@@ -219,19 +219,19 @@ export class SnakeScene extends Phaser.Scene {
         });
       }
     };
-      if (this.cursors.left.isDown) {
+    if (this.cursors.left.isDown || this.QKey.isDown) {
       this.velocityX = -this.VELOCITY;
       this.velocityY = 0;
     };
-    if (this.cursors.right.isDown) {
+    if (this.cursors.right.isDown || this.DKey.isDown) {
       this.velocityX = this.VELOCITY;
       this.velocityY = 0;
     };
-    if (this.cursors.up.isDown) {
+    if (this.cursors.up.isDown || this.ZKey.isDown) {
       this.velocityX = 0;
       this.velocityY = -this.VELOCITY;
     };
-    if (this.cursors.down.isDown) {
+    if (this.cursors.down.isDown || this.SKey.isDown) {
       this.velocityX = 0;
       this.velocityY = this.VELOCITY;
     };

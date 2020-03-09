@@ -6,6 +6,10 @@ export class OtherScene extends Phaser.Scene {
   DOWNKey: any;
   RIGHTKey: any;
   SpaceKey: any;
+  ZKey: any;
+  QKey: any;
+  SKey: any;
+  DKey: any;
   
   constructor() {
     super('OtherScene');
@@ -20,6 +24,10 @@ export class OtherScene extends Phaser.Scene {
     this.DOWNKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN );
     this.RIGHTKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT );
     this.SpaceKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE );
+    this.ZKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Z );
+    this.QKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q );
+    this.SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S );
+    this.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D );
   };
   create(): void {
     const logo = this.add.sprite(250, 300, "myImage2");
@@ -38,7 +46,7 @@ export class OtherScene extends Phaser.Scene {
     if (this.escKey.isDown)  {
       this.scene.start('MainScene');
     };
-    if (this.UPKey.isDown || this.LEFTKey.isDown || this.DOWNKey.isDown || this.RIGHTKey.isDown) {
+    if (this.UPKey.isDown || this.LEFTKey.isDown || this.DOWNKey.isDown || this.RIGHTKey.isDown || this.ZKey.isDown || this.QKey.isDown || this.SKey.isDown || this.DKey.isDown) {
       this.scene.start('SnakeScene');
     };
   };
