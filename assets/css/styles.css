@@ -24,3 +24,10 @@ body div.container div#game {
   margin-left: auto;
   margin-right: auto;
 }
+#blink {
+  color: #DA3A19;
+  font-size: 34px;
+  font-weight: bold;
+  font-family: sans-serif;
+  transition: 0.4s;
+  }
