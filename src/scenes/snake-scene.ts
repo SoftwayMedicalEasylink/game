@@ -1,5 +1,6 @@
 import { GameOver } from "../objects/game-over";
 import { Scores } from "../objects/Scores";
+import { Hashtags } from "../objects/hashtag";
 
 export class SnakeScene extends Phaser.Scene {
   color = new Phaser.Display.Color();
@@ -14,8 +15,8 @@ export class SnakeScene extends Phaser.Scene {
   VELOCITY = 32;
   SpaceKey: Phaser.Input.Keyboard.Key;
   SPACE = 'SPACE';
-  Ncapsule: number;
-  capsule: Phaser.Physics.Arcade.Sprite;
+  Nhashtags: number;
+  hashtag: Hashtags;
   status = 'playing';
   QKey: Phaser.Input.Keyboard.Key;
   ZKey: Phaser.Input.Keyboard.Key;
@@ -23,12 +24,18 @@ export class SnakeScene extends Phaser.Scene {
   DKey: Phaser.Input.Keyboard.Key;
   gameOver: GameOver;
   Scores: Scores;
+  availableColors = ['#00ff00', '#0033cc', '#ff00ff', '#ff6600', '#ff0000', '#ffff00', '#009900', '#990099'];
+  availableHastags = ['#CULTURECLIENT', '#EXPERTISE', '#HONÈTETÉ', '#AUDACE', "#SENSDEL'ENGAGEMENT"]
+  word;
+  Nword = 0;
+  WordText;
 
   constructor() {
     super({ key: 'SnakeScene' });
   }
   
   preload(): void {
+    
     this.load.image('chess', "./assets/images/chess.png");
     this.load.image('ground', "./assets/images/ground.png");
     this.load.image('cube', "./assets/images/cube.png");
@@ -62,6 +69,7 @@ export class SnakeScene extends Phaser.Scene {
     this.player.setBounce(0);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.Scores.ShowScore();
+    this.WordText = this.add.text(300, 514, 'Word: ' + this.Nword, { fontSize: '32px', fill: '#000' });
     
     this.timerEvent = this.time.addEvent({
       delay: this.Speed,
@@ -69,16 +77,25 @@ export class SnakeScene extends Phaser.Scene {
       callback: this.moveSnake,
       callbackScope: this
     });
-    
-    this.Ncapsule = 1;
-    const capsule = this.physics.add.sprite(this.tile * 11, this.tile * 8, 'capsule').setOrigin(0);
-    capsule.scale = 0.25;
-    this.physics.add.overlap(this.player, capsule, this.collectCapsule());
+    this.Nhashtags = 1;
+    this.hashtag = new Hashtags(this, this.tile * 12.5, this.tile * 8.5,'#', '#000');
+    this.physics.add.overlap(this.player, this.hashtag, this.collectHashtag());
+    this.player.setCollideWorldBounds(true);
   };
 
-  collectCapsule(): ArcadePhysicsCallback {
-    return (player: Phaser.Physics.Arcade.Sprite, capsule: Phaser.Physics.Arcade.Sprite) => {
-      capsule.disableBody(true, true);
+  generateHashtags() {
+    this.Nhashtags = 0;
+    this.word = this.availableHastags[this.getRandomInt(5)]
+    for (let letter of this.word) {
+      this.hashtag = new Hashtags(this, this.tile * (this.getRandomInt(16) + 0.5), this.tile * (this.getRandomInt(16) + 0.5), letter, this.availableColors[this.getRandomInt(8)]);
+      this.physics.add.overlap(this.player, this.hashtag, this.collectHashtag());
+      this.Nhashtags++;
+    };    
+  }
+
+  collectHashtag(): ArcadePhysicsCallback {
+    return (player: Phaser.GameObjects.GameObject, hashtag: Phaser.GameObjects.GameObject) => {
+      hashtag.destroy();
       this.Scores.addPoint()
     }
   }
@@ -87,6 +104,9 @@ export class SnakeScene extends Phaser.Scene {
     return (player, ground) => {
       this.gameOver.show();
     }
+  }
+  getRandomInt(max) {
+    return Math.floor(Math.random() * Math.floor(max));
   }
   
   update() {
@@ -105,19 +125,10 @@ export class SnakeScene extends Phaser.Scene {
       return;
     }
     this.Scores.BonusScore();
-    if (this.Ncapsule == 0) {
-      function getRandomInt(max) {
-        return Math.floor(Math.random() * Math.floor(max));
-      }
-      for (let i = 0; i < 16; i++) {
-        var prc = getRandomInt(2);
-        if (prc === 1) {
-          this.capsule = this.physics.add.sprite(this.tile * getRandomInt(16), this.tile * getRandomInt(16), 'capsule').setOrigin(0);
-          this.capsule.scale = 0.25;
-          this.Ncapsule += 1;
-          this.physics.add.overlap(this.player, this.capsule, this.collectCapsule());
-        };
-      };
+    if (this.Nhashtags == 0) {
+      this.generateHashtags();
+      this.Nword++;
+      this.WordText.setText('Word: ' + this.Nword);
     };
 
     if (this.velocityX <= 0 && (this.cursors.left.isDown || this.QKey.isDown)) {
