@@ -119,24 +119,7 @@ export class SnakeScene extends Phaser.Scene {
         };
       };
     };
-    /*if (this.cursors.left.isDown || this.QKey.isDown) {
-      this.velocityX = -this.VELOCITY;
-      this.velocityY = 0;
-    }
-    if(this.cursors.right.isDown || this.DKey.isDown) {
-      this.velocityX = this.VELOCITY;
-      this.velocityY = 0;
-    }
-    
-    if (this.cursors.up.isDown || this.ZKey.isDown) {
-      this.velocityX = 0;
-      this.velocityY = -this.VELOCITY;
-    }
 
-    if(this.cursors.down.isDown || this.SKey.isDown) {
-      this.velocityX = 0;
-      this.velocityY = this.VELOCITY;
-    }*/
     if (this.velocityX <= 0 && (this.cursors.left.isDown || this.QKey.isDown)) {
       this.velocityX = -this.VELOCITY;
       this.velocityY = 0;
