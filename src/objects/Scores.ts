@@ -14,8 +14,8 @@ export class Scores extends Phaser.GameObjects.Container {
         this.scoreText = this.snakeScene.add.text(16, 514, 'Score: ' + this.score, { fontSize: '32px', fill: '#000' });
     };
     public addPoint() {
-        this.score += 1;
-        this.snakeScene.Ncapsule -= 1;
+        this.score++;
+        this.snakeScene.Ncapsule--;
         this.scoreText.setText('Score: ' + this.score)
     };
     public BonusScore() {

@@ -18,12 +18,7 @@ export class GameOver extends Phaser.GameObjects.Container {
     }
 
     public isShown(): boolean {
-        if (this.visible === true) {
-            return true;
-        } 
-        else {
-            return false;
-        }
+        return this.visible;
     }
 
     public show() {
