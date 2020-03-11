@@ -9,4 +9,8 @@ export class Hashtags extends Phaser.GameObjects.Text {
         snakeScene.physics.world.enable(this);
         snakeScene.children.add(this);
     }
+
+    get arcadeBody(): Phaser.Physics.Arcade.Body {
+        return this.body;
+    }
 }

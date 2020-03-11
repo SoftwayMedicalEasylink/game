@@ -20,7 +20,7 @@ export class Scores extends Phaser.GameObjects.Container {
         this.scoreText.setText('Score: ' + this.score)
     };
     public BonusScore() {
-        if (this.score === 1) {
+        if (this.score >= 1 && this.score < 5) {
             this.snakeScene.Speed = 250;
             if (this.snakeScene.timerEvent.delay !== this.snakeScene.Speed) {
               this.snakeScene.timerEvent = this.snakeScene.timerEvent.reset({
@@ -31,8 +31,20 @@ export class Scores extends Phaser.GameObjects.Container {
               });
             }
           };
-          if (this.score === 5) {
+          if (this.score >= 5 && this.score < 15) {
             this.snakeScene.chess.setVisible(false);
+            this.snakeScene.Speed = 200;
+            if (this.snakeScene.timerEvent.delay !== this.snakeScene.Speed) {
+              this.snakeScene.timerEvent = this.snakeScene.timerEvent.reset({
+                delay: this.snakeScene.Speed,
+                loop: true,
+                callback: this.snakeScene.moveSnake,
+                callbackScope: this.snakeScene
+              });
+            }
+          };
+          if (this.score >= 15 && this.score < 25) {
+            this.snakeScene.chess.setVisible(true);
             this.snakeScene.Speed = 175;
             if (this.snakeScene.timerEvent.delay !== this.snakeScene.Speed) {
               this.snakeScene.timerEvent = this.snakeScene.timerEvent.reset({
@@ -43,20 +55,8 @@ export class Scores extends Phaser.GameObjects.Container {
               });
             }
           };
-          if (this.score === 15) {
-            this.snakeScene.chess.setVisible(true);
-            this.snakeScene.Speed = 100;
-            if (this.snakeScene.timerEvent.delay !== this.snakeScene.Speed) {
-              this.snakeScene.timerEvent = this.snakeScene.timerEvent.reset({
-                delay: this.snakeScene.Speed,
-                loop: true,
-                callback: this.snakeScene.moveSnake,
-                callbackScope: this.snakeScene
-              });
-            }
-          };
-          if (this.score === 25) {
-            this.snakeScene.Speed = 125;
+          if (this.score >= 25 && this.score < 50) {
+            this.snakeScene.Speed = 150;
             if (this.snakeScene.timerEvent.delay !== this.snakeScene.Speed) {
               this.snakeScene.timerEvent = this.snakeScene.timerEvent.reset({
                 delay: this.snakeScene.Speed,
@@ -92,10 +92,32 @@ export class Scores extends Phaser.GameObjects.Container {
               });
             }
           };
-          if (this.score === 102) {
+          if (this.score >= 102 && this.score < 200) {
             this.snakeScene.chess.setTint();
             this.snakeScene.player.setTint();
             this.snakeScene.Speed = 60;
+            if (this.snakeScene.timerEvent.delay !== this.snakeScene.Speed) {
+              this.snakeScene.timerEvent = this.snakeScene.timerEvent.reset({
+                delay: this.snakeScene.Speed,
+                loop: true,
+                callback: this.snakeScene.moveSnake,
+                callbackScope: this.snakeScene
+              });
+            }
+          };
+          if (this.score >= 200 && this.score < 500) {
+            this.snakeScene.Speed = 30;
+            if (this.snakeScene.timerEvent.delay !== this.snakeScene.Speed) {
+              this.snakeScene.timerEvent = this.snakeScene.timerEvent.reset({
+                delay: this.snakeScene.Speed,
+                loop: true,
+                callback: this.snakeScene.moveSnake,
+                callbackScope: this.snakeScene
+              });
+            }
+          };
+          if (this.score >= 500) {
+            this.snakeScene.Speed = 0;
             if (this.snakeScene.timerEvent.delay !== this.snakeScene.Speed) {
               this.snakeScene.timerEvent = this.snakeScene.timerEvent.reset({
                 delay: this.snakeScene.Speed,
