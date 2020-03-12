@@ -1,7 +1,7 @@
 import { GameOver } from "../objects/game-over";
 import { Scores } from "../objects/Scores";
 import { Hashtags } from "../objects/hashtag";
-import { saveHighScore } from "../objects/save";
+import { Direction, canTurn, getVelocity } from "../objects/direction";
 
 export class SnakeScene extends Phaser.Scene {
   color = new Phaser.Display.Color();
@@ -27,7 +27,7 @@ export class SnakeScene extends Phaser.Scene {
   PDOWNKey: Phaser.Input.Keyboard.Key;
   gameOver: GameOver;
   Scores: Scores;
-  availableColors = ['#00ff00', '#0033cc', '#ff00ff', '#ff6600', '#ff0000', '#ffff00', '#009900', '#990099'];
+  availableColors = ['#00ff00', '#0033cc', '#ff00ff', '#ff6600', '#ff0000', '#666666', '#009900', '#990099'];
   availableHastags = ["#CULTURECLIENT", "#EXPERTISE", "#HONETETE", "#AUDACE", "#SENSDEL'ENGAGEMENT", "ESPRITD'EQUIPE"]
   word;
   Nword = 0;
@@ -40,7 +40,8 @@ export class SnakeScene extends Phaser.Scene {
   gameBounds: Phaser.Geom.Rectangle;
   ModeDevText;
   indexAManger: number;
-  canTurn: boolean;
+  currentDirection: Direction;
+  nextDirection: Direction;
 
   constructor() {
     super({ key: 'SnakeScene' });
@@ -167,26 +168,20 @@ export class SnakeScene extends Phaser.Scene {
       this.Nword++;
       this.WordText.setText('Word: ' + this.Nword);
     };
-    if (this.velocityX <= 0 && (this.cursors.left.isDown || this.QKey.isDown) && this.canTurn) {
-      this.velocityX = -this.VELOCITY;
-      this.velocityY = 0;
-      this.canTurn = false;
+    
+    if (canTurn(this.currentDirection, 'LEFT') && (this.cursors.left.isDown || this.QKey.isDown)) {
+      this.nextDirection = 'LEFT';
     }
-    if(this.velocityX >= 0 && (this.cursors.right.isDown || this.DKey.isDown) && this.canTurn) {
-      this.velocityX = this.VELOCITY;
-      this.velocityY = 0;
-      this.canTurn = false;
+    if (canTurn(this.currentDirection, 'RIGHT') && (this.cursors.right.isDown || this.DKey.isDown)) {
+      this.nextDirection = 'RIGHT';
     }
-    if (this.velocityY <= 0 && (this.cursors.up.isDown || this.ZKey.isDown) && this.canTurn) {
-      this.velocityX = 0;
-      this.velocityY = -this.VELOCITY;
-      this.canTurn = false;
+    if (canTurn(this.currentDirection, 'UP') && (this.cursors.up.isDown || this.ZKey.isDown)) {
+      this.nextDirection = 'UP';
     }
-    if(this.velocityY >= 0 && (this.cursors.down.isDown || this.SKey.isDown) && this.canTurn) {
-      this.velocityX = 0;
-      this.velocityY = this.VELOCITY;
-      this.canTurn = false;
+    if (canTurn(this.currentDirection, 'DOWN') && (this.cursors.down.isDown || this.SKey.isDown)) {
+      this.nextDirection = 'DOWN';
     }
+
     const endKeyJustDown = Phaser.Input.Keyboard.JustDown(this.ENDKey);
     if (endKeyJustDown && this.valid === 0) {
       this.valid = 1;
@@ -217,12 +212,15 @@ export class SnakeScene extends Phaser.Scene {
   };
 
   moveSnake(): void {
-    this.canTurn = true;
-    const targetX = this.player.x + this.velocityX;
-    const targetY = this.player.y + this.velocityY;
-    if (this.valid === 0 || this.gameBounds.contains(targetX, targetY)) {
-      this.player.x = targetX;
-      this.player.y = targetY;
+    const velocity = getVelocity(this.nextDirection, this.VELOCITY);
+    if (velocity) {
+      this.currentDirection = this.nextDirection;
+      const targetX = this.player.x + velocity.velocityX;
+      const targetY = this.player.y + velocity.velocityY;
+      if (this.valid === 0 || this.gameBounds.contains(targetX, targetY)) {
+        this.player.x = targetX;
+        this.player.y = targetY;
+      }
     }
   };
 
