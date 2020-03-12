@@ -9,7 +9,6 @@ export class RestartScene extends Phaser.Scene {
   preload(): void {
 
   }
-
   create(): void {
     this.scene.manager.remove('SnakeScene');
   }
