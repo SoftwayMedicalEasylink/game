@@ -140,7 +140,6 @@ export class SnakeScene extends Phaser.Scene {
   
   collides(player: any, ground: any): ArcadePhysicsCallback {
     return (player, ground) => {
-      console.log("!!!!!!!!!!")
       this.Scores.Highscore()
       this.gameOver.show();
     }

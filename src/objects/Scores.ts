@@ -50,7 +50,6 @@ export class Scores extends Phaser.GameObjects.Container {
       }
     }
     Highscore() {
-      console.log("!!!!!!!!")
       this.Localhighscore = loadHighScore()
       if (this.Localhighscore < this.score) {
         this.Localhighscore = this.score
