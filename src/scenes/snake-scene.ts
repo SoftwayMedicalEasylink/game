@@ -46,7 +46,6 @@ export class SnakeScene extends Phaser.Scene {
   }
   
   preload(): void {
-    
     this.load.image('chess', "./assets/images/chess.png");
     this.load.image('ground', "./assets/images/ground.png");
     this.load.image('cube', "./assets/images/cube.png");
@@ -64,8 +63,9 @@ export class SnakeScene extends Phaser.Scene {
     this.Scores = new Scores(this);
     this.gameOver.preload();
   }
-  
+
   create(): void {
+    this.timerEvent = this.time.addEvent({});
     this.gameBounds = new Phaser.Geom.Rectangle(0, 0, this.game.config.width as number - this.tile, this.game.config.height as number - this.tile * 2);
     this.chess = this.add.image(0, 0, 'chess').setOrigin(0);
     this.wallsGroup = this.physics.add.staticGroup();
@@ -81,16 +81,10 @@ export class SnakeScene extends Phaser.Scene {
     this.player.setCollideWorldBounds(false);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.Scores.ShowScore();
+    this.Scores.RestartMovement()
     this.devText = this.add.text(this.tile * 14.53, this.tile * 14.4, this.blinkdev(), { fontSize: '100px', fill: '#00FF00' });
     this.devText.setText();
     this.WordText = this.add.text(300, 514, 'Word: ' + this.Nword, { fontSize: '32px', fill: '#000' });
-    
-    this.timerEvent = this.time.addEvent({
-      delay: this.Speed,
-      loop: true,
-      callback: this.moveSnake,
-      callbackScope: this
-    });
     this.Nhashtags = 1;
     this.hashtagsGroup = this.physics.add.group();
     this.physics.add.overlap(this.hashtagsGroup, this.hashtagsGroup, this.collidesHashtag());
@@ -100,20 +94,28 @@ export class SnakeScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, hashtag, this.collectHashtag());
     this.hashtagsGroup.add(hashtag);
   };
-
+  
   generateHashtags() {
     this.Nhashtags = 0;
     this.word = this.availableHastags[this.getRandomInt(5)]
     this.indexAManger = 0;
     for (let letter of this.word) {
-      const hashtag = new Hashtags(this, this.tile * (this.getRandomInt(16) + 0.5), this.tile * (this.getRandomInt(16) + 0.5), letter, this.availableColors[this.getRandomInt(8)]);
+      const hashtag = new Hashtags(this, this.generateRandomPosition(), this.generateRandomPosition(), letter, this.availableColors[this.getRandomInt(8)]);
       this.physics.add.overlap(this.player, hashtag, this.collectHashtag());
       this.hashtagsGroup.add(hashtag);
       this.Nhashtags++;
     };
-    console.log(this.word)
   }
-  
+
+  Movement() {
+    this.timerEvent.reset({
+      delay: this.Speed,
+      loop: true,
+      callback: this.moveSnake,
+      callbackScope: this
+    });
+  }
+
   collectHashtag(): ArcadePhysicsCallback {
     return (_player: Phaser.GameObjects.GameObject, hashtag: Hashtags) => {
       const lettreAManger = this.word[this.indexAManger];
@@ -123,15 +125,15 @@ export class SnakeScene extends Phaser.Scene {
         this.indexAManger++;
       }
       else {
-        hashtag.setPosition(this.tile * (this.getRandomInt(16) + 0.5), this.tile * (this.getRandomInt(16) + 0.5))
+        hashtag.setPosition(this.generateRandomPosition(), this.generateRandomPosition())
         this.Scores.lessPoint();
       }
     }
   }
-
+  
   collidesHashtag(): ArcadePhysicsCallback {
     return (hashtag1: Hashtags, hashtag2: Hashtags) => {
-      hashtag1.setPosition(this.tile * (this.getRandomInt(16) + 0.5), this.tile * (this.getRandomInt(16) + 0.5))
+      hashtag1.setPosition(this.generateRandomPosition(), this.generateRandomPosition())
     }
   }
   
@@ -140,20 +142,21 @@ export class SnakeScene extends Phaser.Scene {
       this.gameOver.show();
     }
   }
+
   getRandomInt(max) {
     return Math.floor(Math.random() * Math.floor(max));
   }
   
   update() {
     if (this.gameOver.isShown()) {
-        this.player.disableBody(true, true);
-        this.player.x = this.tile;
-        this.player.y = this.tile * 8;
-        this.velocityX = 0;
-        this.velocityY = 0;
-        this.chess.setVisible(true);
-        this.chess.setTint(0xFFB5B5);
-        this.gameOver.update();
+      this.player.disableBody(true, true);
+      this.player.x = this.tile;
+      this.player.y = this.tile * 8;
+      this.velocityX = 0;
+      this.velocityY = 0;
+      this.chess.setVisible(true);
+      this.chess.setTint(0xFFB5B5);
+      this.gameOver.update();
       return;
     }
     this.Scores.BonusScore();
@@ -162,7 +165,6 @@ export class SnakeScene extends Phaser.Scene {
       this.Nword++;
       this.WordText.setText('Word: ' + this.Nword);
     };
-
     if (this.velocityX <= 0 && (this.cursors.left.isDown || this.QKey.isDown) && this.canTurn) {
       this.velocityX = -this.VELOCITY;
       this.velocityY = 0;
@@ -183,7 +185,6 @@ export class SnakeScene extends Phaser.Scene {
       this.velocityY = this.VELOCITY;
       this.canTurn = false;
     }
-
     const endKeyJustDown = Phaser.Input.Keyboard.JustDown(this.ENDKey);
     if (endKeyJustDown && this.valid === 0) {
       this.valid = 1;
@@ -212,6 +213,7 @@ export class SnakeScene extends Phaser.Scene {
       this.devText.setText(this.blinkdev());
     }
   };
+
   moveSnake(): void {
     this.canTurn = true;
     const targetX = this.player.x + this.velocityX;
@@ -221,12 +223,17 @@ export class SnakeScene extends Phaser.Scene {
       this.player.y = targetY;
     }
   };
+
+  generateRandomPosition(): number {
+    return this.tile * (this.getRandomInt(16) + 0.5)
+  }
+
   blinkdev() {
     if (this.time.now % 1000 < 500) {
       return ".";
     }
     else {
       return " ";
-      }
+    }
   };
 }
