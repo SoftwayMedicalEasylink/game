@@ -119,12 +119,10 @@ export class SnakeScene extends Phaser.Scene {
         hashtag.destroy();
         this.Scores.addPoint();
         this.indexAManger++;
-        console.log('cc')
       }
       else {
         hashtag.setPosition(this.tile * (this.getRandomInt(16) + 0.5), this.tile * (this.getRandomInt(16) + 0.5))
         this.Scores.lessPoint();
-        console.log('why')
       }
     }
   }
