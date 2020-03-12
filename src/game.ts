@@ -17,5 +17,5 @@ new Phaser.Game({
       debug: false
     }
   },
-  scene: [ MainScene, OtherScene, SnakeScene, RestartScene ]
+  scene: [ /*MainScene, OtherScene,*/ SnakeScene, RestartScene ]
 });

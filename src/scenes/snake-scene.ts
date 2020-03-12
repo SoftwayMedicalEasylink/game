@@ -22,6 +22,8 @@ export class SnakeScene extends Phaser.Scene {
   SKey: Phaser.Input.Keyboard.Key;
   DKey: Phaser.Input.Keyboard.Key;
   ENDKey: Phaser.Input.Keyboard.Key;
+  PUPKey: Phaser.Input.Keyboard.Key;
+  PDOWNKey: Phaser.Input.Keyboard.Key;
   gameOver: GameOver;
   Scores: Scores;
   availableColors = ['#00ff00', '#0033cc', '#ff00ff', '#ff6600', '#ff0000', '#ffff00', '#009900', '#990099'];
@@ -36,6 +38,7 @@ export class SnakeScene extends Phaser.Scene {
   gameOverCollider: Phaser.Physics.Arcade.Collider;
   gameBounds: Phaser.Geom.Rectangle;
   ModeDevText;
+  indexAManger: number;
 
   constructor() {
     super({ key: 'SnakeScene' });
@@ -53,6 +56,8 @@ export class SnakeScene extends Phaser.Scene {
     this.SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S );
     this.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D );
     this.ENDKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.END);
+    this.PUPKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.PAGE_UP);
+    this.PDOWNKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.PAGE_DOWN);
     
     this.gameOver = new GameOver(this);
     this.Scores = new Scores(this);
@@ -61,7 +66,6 @@ export class SnakeScene extends Phaser.Scene {
   
   create(): void {
     this.gameBounds = new Phaser.Geom.Rectangle(0, 0, this.game.config.width as number - this.tile, this.game.config.height as number - this.tile * 2);
-
     this.chess = this.add.image(0, 0, 'chess').setOrigin(0);
     this.wallsGroup = this.physics.add.staticGroup();
     this.wallsGroup.create(this.tile * 0, this.tile * -1, 'ground').setOrigin(0).refreshBody();
@@ -87,20 +91,19 @@ export class SnakeScene extends Phaser.Scene {
       callbackScope: this
     });
     this.Nhashtags = 1;
-    
     this.hashtagsGroup = this.physics.add.group();
     this.physics.add.overlap(this.hashtagsGroup, this.hashtagsGroup, this.collidesHashtag());
-
+    this.word = '#';
+    this.indexAManger = 0;
     const hashtag = new Hashtags(this, this.tile * 12.5, this.tile * 8.5,'#', '#000');
     this.physics.add.overlap(this.player, hashtag, this.collectHashtag());
     this.hashtagsGroup.add(hashtag);
-
   };
 
   generateHashtags() {
     this.Nhashtags = 0;
     this.word = this.availableHastags[this.getRandomInt(5)]
-
+    this.indexAManger = 0;
     for (let letter of this.word) {
       const hashtag = new Hashtags(this, this.tile * (this.getRandomInt(16) + 0.5), this.tile * (this.getRandomInt(16) + 0.5), letter, this.availableColors[this.getRandomInt(8)]);
       this.physics.add.overlap(this.player, hashtag, this.collectHashtag());
@@ -108,11 +111,21 @@ export class SnakeScene extends Phaser.Scene {
       this.Nhashtags++;
     };   
   }
-
+  
   collectHashtag(): ArcadePhysicsCallback {
-    return (_player: Phaser.GameObjects.GameObject, hashtag: Phaser.GameObjects.GameObject) => {
-      hashtag.destroy();
-      this.Scores.addPoint()
+    return (_player: Phaser.GameObjects.GameObject, hashtag: Hashtags) => {
+      const lettreAManger = this.word[this.indexAManger];
+      if (lettreAManger === hashtag.text) {
+        hashtag.destroy();
+        this.Scores.addPoint();
+        this.indexAManger++;
+        console.log('cc')
+      }
+      else {
+        hashtag.setPosition(this.tile * (this.getRandomInt(16) + 0.5), this.tile * (this.getRandomInt(16) + 0.5))
+        this.Scores.lessPoint();
+        console.log('why')
+      }
     }
   }
 
@@ -174,7 +187,7 @@ export class SnakeScene extends Phaser.Scene {
       this.Scores.scoreText = this.add.text(16, 514, 'Score: ' + this.Scores.score, { fontSize: '32px', fill: '#000FFF' });
       this.WordText.destroy();
       this.WordText = this.add.text(300, 514, 'Word: ' + this.Nword, { fontSize: '32px', fill: '#000FFF' });
-      this.ModeDevText = this.add.text(0, 0, 'Development mod', { fontSize: '15px', fill: '#000FFF' });
+      this.ModeDevText = this.add.text(0, 0, 'Development mod', { fontSize: '15 px', fill: '#000FFF' });
     } 
     else if (endKeyJustDown && this.valid === 1) {
       this.valid = 0;
@@ -186,6 +199,12 @@ export class SnakeScene extends Phaser.Scene {
       this.ModeDevText.destroy();
     }
     if (this.valid === 1) {
+      if (Phaser.Input.Keyboard.JustDown(this.PUPKey)) {
+        this.Scores.addPointDev();
+      }
+      else if (Phaser.Input.Keyboard.JustDown(this.PDOWNKey)) {
+        this.Scores.lessPointDev();
+      }
       this.devText.setText(this.blinkdev());
     }
   };
