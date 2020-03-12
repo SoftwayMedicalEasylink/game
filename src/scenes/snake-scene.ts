@@ -27,7 +27,7 @@ export class SnakeScene extends Phaser.Scene {
   gameOver: GameOver;
   Scores: Scores;
   availableColors = ['#00ff00', '#0033cc', '#ff00ff', '#ff6600', '#ff0000', '#ffff00', '#009900', '#990099'];
-  availableHastags = ["#CULTURECLIENT", "#EXPERTISE", "#HONÈTETÉ", "#AUDACE", "#SENSDEL'ENGAGEMENT"]
+  availableHastags = ["#CULTURECLIENT", "#EXPERTISE", "#HONETETE", "#AUDACE", "#SENSDEL'ENGAGEMENT", "ESPRITD'EQUIPE"]
   word;
   Nword = 0;
   WordText;
@@ -109,7 +109,8 @@ export class SnakeScene extends Phaser.Scene {
       this.physics.add.overlap(this.player, hashtag, this.collectHashtag());
       this.hashtagsGroup.add(hashtag);
       this.Nhashtags++;
-    };   
+    };
+    console.log(this.word)
   }
   
   collectHashtag(): ArcadePhysicsCallback {
