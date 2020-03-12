@@ -1,6 +1,7 @@
 import { GameOver } from "../objects/game-over";
 import { Scores } from "../objects/Scores";
 import { Hashtags } from "../objects/hashtag";
+import { saveHighScore } from "../objects/save";
 
 export class SnakeScene extends Phaser.Scene {
   color = new Phaser.Display.Color();
@@ -126,7 +127,7 @@ export class SnakeScene extends Phaser.Scene {
       }
       else {
         hashtag.setPosition(this.generateRandomPosition(), this.generateRandomPosition())
-        this.Scores.lessPoint();
+        this.Scores.removePoint();
       }
     }
   }
@@ -139,6 +140,8 @@ export class SnakeScene extends Phaser.Scene {
   
   collides(player: any, ground: any): ArcadePhysicsCallback {
     return (player, ground) => {
+      console.log("!!!!!!!!!!")
+      this.Scores.Highscore()
       this.gameOver.show();
     }
   }
@@ -208,7 +211,7 @@ export class SnakeScene extends Phaser.Scene {
         this.Scores.addPointDev();
       }
       else if (Phaser.Input.Keyboard.JustDown(this.PDOWNKey)) {
-        this.Scores.lessPointDev();
+        this.Scores.removePointDev();
       }
       this.devText.setText(this.blinkdev());
     }

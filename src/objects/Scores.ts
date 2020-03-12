@@ -1,10 +1,12 @@
 import { SnakeScene } from '../scenes/snake-scene';
+import { saveHighScore, loadHighScore } from './save';
 
 export class Scores extends Phaser.GameObjects.Container {
     snakeScene: SnakeScene;
     score = 0;
     scoreText;
-    highScore = 0;
+    highscoreText: Phaser.GameObjects.Text;
+    Localhighscore: number;
 
     constructor(snakeScene: SnakeScene) {
         super(snakeScene);
@@ -19,7 +21,7 @@ export class Scores extends Phaser.GameObjects.Container {
         this.snakeScene.Nhashtags--;
         this.scoreText.setText('Score: ' + this.score)
     };
-    public lessPoint() {
+    public removePoint() {
       this.score--;
       this.scoreText.setText('Score: ' + this.score)
     }
@@ -27,7 +29,7 @@ export class Scores extends Phaser.GameObjects.Container {
       this.score += 10;
       this.scoreText.setText('Score: ' + this.score)
     };
-    public lessPointDev() {
+    public removePointDev() {
       this.score -= 10;
       this.scoreText.setText('Score: ' + this.score)
     }
@@ -47,9 +49,19 @@ export class Scores extends Phaser.GameObjects.Container {
         this.snakeScene.Movement()
       }
     }
+    Highscore() {
+      console.log("!!!!!!!!")
+      this.Localhighscore = loadHighScore()
+      if (this.Localhighscore < this.score) {
+        this.Localhighscore = this.score
+        saveHighScore(this.Localhighscore);
+      }
+      this.highscoreText = this.snakeScene.add.text(80, 100, 'High Score: ' + this.Localhighscore, { fontSize: '40px', fill: '#FFFFFF' });
+    }
 
     public BonusScore() {
       if (this.score < 0 && this.snakeScene.valid === 0) {
+        this.Highscore()
         this.snakeScene.gameOver.show();
       }
       if (this.score === 0) {

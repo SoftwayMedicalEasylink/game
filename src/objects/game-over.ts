@@ -27,10 +27,6 @@ export class GameOver extends Phaser.GameObjects.Container {
         this.restartText = this.snakeScene.add.text(30, 230, 'Press ' + this.blink() + ' to restart', { fontSize: '34px', fill: '#870000', });
         this.DeadSnake = this.snakeScene.add.image(321, 321, 'DeadSnake');
         this.DeadSnake.scale = 0.25;
-        /* (this.snakeScene.Scores.highScore < this.snakeScene.Scores.score) {
-            this.snakeScene.Scores.highScore = this.snakeScene.Scores.score                             //Pas encore prêt
-        }
-        this.snakeScene.add.text(65, 100, 'HighScore of your party: ' + this.snakeScene.Scores.highScore, { fontSize: '24px', fill: '#870000' });      */
     }
 
     public update() {
