@@ -39,6 +39,7 @@ export class SnakeScene extends Phaser.Scene {
   gameBounds: Phaser.Geom.Rectangle;
   ModeDevText;
   indexAManger: number;
+  canTurn: boolean;
 
   constructor() {
     super({ key: 'SnakeScene' });
@@ -162,21 +163,25 @@ export class SnakeScene extends Phaser.Scene {
       this.WordText.setText('Word: ' + this.Nword);
     };
 
-    if (this.velocityX <= 0 && (this.cursors.left.isDown || this.QKey.isDown)) {
+    if (this.velocityX <= 0 && (this.cursors.left.isDown || this.QKey.isDown) && this.canTurn) {
       this.velocityX = -this.VELOCITY;
       this.velocityY = 0;
+      this.canTurn = false;
     }
-    if(this.velocityX >= 0 && (this.cursors.right.isDown || this.DKey.isDown)) {
+    if(this.velocityX >= 0 && (this.cursors.right.isDown || this.DKey.isDown) && this.canTurn) {
       this.velocityX = this.VELOCITY;
       this.velocityY = 0;
+      this.canTurn = false;
     }
-    if (this.velocityY <= 0 && (this.cursors.up.isDown || this.ZKey.isDown)) {
+    if (this.velocityY <= 0 && (this.cursors.up.isDown || this.ZKey.isDown) && this.canTurn) {
       this.velocityX = 0;
       this.velocityY = -this.VELOCITY;
+      this.canTurn = false;
     }
-    if(this.velocityY >= 0 && (this.cursors.down.isDown || this.SKey.isDown)) {
+    if(this.velocityY >= 0 && (this.cursors.down.isDown || this.SKey.isDown) && this.canTurn) {
       this.velocityX = 0;
       this.velocityY = this.VELOCITY;
+      this.canTurn = false;
     }
 
     const endKeyJustDown = Phaser.Input.Keyboard.JustDown(this.ENDKey);
@@ -208,6 +213,7 @@ export class SnakeScene extends Phaser.Scene {
     }
   };
   moveSnake(): void {
+    this.canTurn = true;
     const targetX = this.player.x + this.velocityX;
     const targetY = this.player.y + this.velocityY;
     if (this.valid === 0 || this.gameBounds.contains(targetX, targetY)) {
