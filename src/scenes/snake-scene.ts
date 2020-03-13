@@ -45,6 +45,8 @@ export class SnakeScene extends Phaser.Scene {
   indexAManger: number;
   currentDirection: Direction;
   nextDirection: Direction;
+  GameStarting = 0;
+  BodyPartGroup: any;
 
   constructor() {
     super({ key: 'SnakeScene' });
@@ -97,11 +99,22 @@ export class SnakeScene extends Phaser.Scene {
     const hashtag = new Hashtags(this, this.tile * 12.5, this.tile * 8.5,'#', '#000');
     this.physics.add.overlap(this.player, hashtag, this.collectHashtag());
     this.hashtagsGroup.add(hashtag);
-    this.BodyPart = new BodyPart(this, this.player);
+    this.BodyPartGroup = this.physics.add.group();
+    this.BodyPart = new BodyPart(this, this.player, this.BodyPartGroup);
     this.BodyPart.addBody()
-  };
+    this.physics.add.collider(this.player, this.BodyPartGroup, this.collidesBody());
+  }
+  
+  collidesBody(): ArcadePhysicsCallback {
+    return (object1, object2) => {
+      if (this.GameStarting === 1) {
+        this.triggerGameOver();
+      }
+    }
+  }
   
   generateHashtags() {
+    this.GameStarting = 1;
     this.Nhashtags = 0;
     this.word = this.availableHastags[this.getRandomInt(5)]
     this.indexAManger = 0;
@@ -146,9 +159,13 @@ export class SnakeScene extends Phaser.Scene {
   
   collides(player: any, ground: any): ArcadePhysicsCallback {
     return (player, ground) => {
-      this.Scores.Highscore()
-      this.gameOver.show();
+      this.triggerGameOver();
     }
+  }
+
+  private triggerGameOver() {
+    this.Scores.Highscore();
+    this.gameOver.show();
   }
 
   getRandomInt(max) {
@@ -173,7 +190,6 @@ export class SnakeScene extends Phaser.Scene {
       this.Nword++;
       this.WordText.setText('Word: ' + this.Nword);
     };
-    
     if (canTurn(this.currentDirection, 'LEFT') && (this.cursors.left.isDown || this.QKey.isDown)) {
       this.nextDirection = 'LEFT';
     }
