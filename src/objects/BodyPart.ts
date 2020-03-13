@@ -45,4 +45,10 @@ export class BodyPart extends Phaser.GameObjects.Sprite {
             this.tailPart.addBody();
         }
     }
+    public setColor(color: number) {
+        this.Body.setTint(color);
+        if (this.tailPart) {
+            this.tailPart.setColor(color);
+        }
+    }
 }

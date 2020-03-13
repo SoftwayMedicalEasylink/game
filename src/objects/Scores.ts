@@ -94,24 +94,28 @@ export class Scores extends Phaser.GameObjects.Container {
       if (this.scoreIsBetween(50, 100)) {
         this.snakeScene.chess.setTint(0x252525)
         this.snakeScene.player.setTint(0x666666)
+        this.snakeScene.BodyPart.setColor(0x666666)
         this.snakeScene.Speed = 125;
         this.RestartMovement()
       };
       if (this.scoreIsBetween(100, 102)) {
         this.snakeScene.chess.setTint(this.snakeScene.color.random(50).color)
         this.snakeScene.player.setTint(this.snakeScene.color.random(50).color)
+        this.snakeScene.BodyPart.setColor(this.snakeScene.color.random(50).color)
         this.snakeScene.Speed = 30;
         this.RestartMovement()
       };
       if (this.scoreIsBetween(102, 200)) {
         this.snakeScene.chess.setTint();
         this.snakeScene.player.setTint();
+        this.snakeScene.BodyPart.setColor(undefined)
         this.snakeScene.Speed = 60;
         this.RestartMovement()
       };
       if (this.scoreIsBetween(200, 500)) {
         this.snakeScene.chess.setTint(0xFF91FC)
         this.snakeScene.player.setTint(0xFF00F8)
+        this.snakeScene.BodyPart.setColor(0xFF00F8)
         this.snakeScene.Speed = 30;
         this.RestartMovement()
       };
