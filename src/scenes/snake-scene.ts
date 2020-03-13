@@ -2,6 +2,7 @@ import { GameOver } from "../objects/game-over";
 import { Scores } from "../objects/Scores";
 import { Hashtags } from "../objects/hashtag";
 import { Direction, canTurn, getVelocity } from "../objects/direction";
+import { BodyPart } from "../objects/BodyPart";
 
 export class SnakeScene extends Phaser.Scene {
   color = new Phaser.Display.Color();
@@ -22,23 +23,25 @@ export class SnakeScene extends Phaser.Scene {
   ZKey: Phaser.Input.Keyboard.Key;
   SKey: Phaser.Input.Keyboard.Key;
   DKey: Phaser.Input.Keyboard.Key;
-  ENDKey: Phaser.Input.Keyboard.Key;
+  HOMEKey: Phaser.Input.Keyboard.Key;
   PUPKey: Phaser.Input.Keyboard.Key;
   PDOWNKey: Phaser.Input.Keyboard.Key;
+  ENDKey: Phaser.Input.Keyboard.Key;
   gameOver: GameOver;
   Scores: Scores;
-  availableColors = ['#00ff00', '#0033cc', '#ff00ff', '#ff6600', '#ff0000', '#666666', '#009900', '#990099'];
+  BodyPart: BodyPart
+  availableColors = ['#00ff00', '#0033cc', '#ff00ff', '#ff6600', '#ff0000', '#888888', '#009900', '#990099'];
   availableHastags = ["#CULTURECLIENT", "#EXPERTISE", "#HONETETE", "#AUDACE", "#SENSDEL'ENGAGEMENT", "ESPRITD'EQUIPE"]
-  word;
+  word: string | any[];
   Nword = 0;
-  WordText;
+  WordText: Phaser.GameObjects.Text;
   hashtagsGroup: Phaser.Physics.Arcade.Group;
   wallsGroup: Phaser.Physics.Arcade.StaticGroup;
-  devText;
+  devText: Phaser.GameObjects.Text;
   valid = 0;
   gameOverCollider: Phaser.Physics.Arcade.Collider;
   gameBounds: Phaser.Geom.Rectangle;
-  ModeDevText;
+  ModeDevText: Phaser.GameObjects.Text;
   indexAManger: number;
   currentDirection: Direction;
   nextDirection: Direction;
@@ -57,9 +60,10 @@ export class SnakeScene extends Phaser.Scene {
     this.QKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.Q );
     this.SKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S );
     this.DKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D );
-    this.ENDKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.END);
+    this.HOMEKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.HOME);
     this.PUPKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.PAGE_UP);
     this.PDOWNKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.PAGE_DOWN);
+    this.ENDKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.END);
     
     this.gameOver = new GameOver(this);
     this.Scores = new Scores(this);
@@ -77,15 +81,13 @@ export class SnakeScene extends Phaser.Scene {
     this.wallsGroup.create(this.tile * 16, this.tile * 0, 'Wallside').setOrigin(0).refreshBody();
     this.player = this.physics.add.sprite(this.tile, this.tile * 8, 'cube').setOrigin(0);
     this.player.scale = 0.25;
-    this.player.setCollideWorldBounds(false);
     this.gameOverCollider = this.physics.add.collider(this.player, this.wallsGroup, this.collides(this.player, this.wallsGroup));
     this.player.setBounce(0);
-    this.player.setCollideWorldBounds(false);
     this.cursors = this.input.keyboard.createCursorKeys();
     this.Scores.ShowScore();
     this.Scores.RestartMovement()
     this.devText = this.add.text(this.tile * 14.53, this.tile * 14.4, this.blinkdev(), { fontSize: '100px', fill: '#00FF00' });
-    this.devText.setText();
+    this.devText.setText(undefined);
     this.WordText = this.add.text(300, 514, 'Word: ' + this.Nword, { fontSize: '32px', fill: '#000' });
     this.Nhashtags = 1;
     this.hashtagsGroup = this.physics.add.group();
@@ -95,6 +97,8 @@ export class SnakeScene extends Phaser.Scene {
     const hashtag = new Hashtags(this, this.tile * 12.5, this.tile * 8.5,'#', '#000');
     this.physics.add.overlap(this.player, hashtag, this.collectHashtag());
     this.hashtagsGroup.add(hashtag);
+    this.BodyPart = new BodyPart(this, this.player);
+    this.BodyPart.addBody()
   };
   
   generateHashtags() {
@@ -125,6 +129,7 @@ export class SnakeScene extends Phaser.Scene {
         hashtag.destroy();
         this.Scores.addPoint();
         this.indexAManger++;
+        this.BodyPart.addBody()
       }
       else {
         hashtag.setPosition(this.generateRandomPosition(), this.generateRandomPosition())
@@ -181,9 +186,8 @@ export class SnakeScene extends Phaser.Scene {
     if (canTurn(this.currentDirection, 'DOWN') && (this.cursors.down.isDown || this.SKey.isDown)) {
       this.nextDirection = 'DOWN';
     }
-
-    const endKeyJustDown = Phaser.Input.Keyboard.JustDown(this.ENDKey);
-    if (endKeyJustDown && this.valid === 0) {
+    const HOMEKeyJustDown = Phaser.Input.Keyboard.JustDown(this.HOMEKey);
+    if (HOMEKeyJustDown && this.valid === 0) {
       this.valid = 1;
       this.Scores.scoreText.destroy();
       this.Scores.scoreText = this.add.text(16, 514, 'Score: ' + this.Scores.score, { fontSize: '32px', fill: '#000FFF' });
@@ -191,9 +195,9 @@ export class SnakeScene extends Phaser.Scene {
       this.WordText = this.add.text(300, 514, 'Word: ' + this.Nword, { fontSize: '32px', fill: '#000FFF' });
       this.ModeDevText = this.add.text(0, 0, 'Development mod', { fontSize: '15 px', fill: '#000FFF' });
     } 
-    else if (endKeyJustDown && this.valid === 1) {
+    else if (HOMEKeyJustDown && this.valid === 1) {
       this.valid = 0;
-      this.devText.setText();
+      this.devText.setText(undefined);
       this.Scores.scoreText.destroy();
       this.Scores.scoreText = this.add.text(16, 514, 'Score: ' + this.Scores.score, { fontSize: '32px', fill: '#000' });
       this.WordText.destroy();
@@ -207,6 +211,10 @@ export class SnakeScene extends Phaser.Scene {
       else if (Phaser.Input.Keyboard.JustDown(this.PDOWNKey)) {
         this.Scores.removePointDev();
       }
+      if (Phaser.Input.Keyboard.JustDown(this.ENDKey)) {
+        this.BodyPart.addBody()
+      }
+
       this.devText.setText(this.blinkdev());
     }
   };
@@ -221,6 +229,7 @@ export class SnakeScene extends Phaser.Scene {
         this.player.x = targetX;
         this.player.y = targetY;
       }
+      this.BodyPart.DiffPosition()
     }
   };
 
