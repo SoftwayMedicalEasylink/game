@@ -10,21 +10,20 @@ export class BodyPart extends Phaser.GameObjects.Sprite {
     tailPart: BodyPart;
 
 
-    constructor(snakeScene, target: Phaser.GameObjects.Sprite) {
+    constructor(snakeScene, target: Phaser.GameObjects.Sprite, BodyPartGroup: Phaser.Physics.Arcade.Group) {
         super(snakeScene, target.x, target.y, 'cube', undefined);
         this.snakeScene = snakeScene;
         this.target = target;
         this.lastTargetPosition = { x: this.target.x, y: this.target.y };
 
-        this.BodyPartGroup = this.snakeScene.physics.add.group();
         this.Body = this.snakeScene.physics.add.sprite(this.target.x, this.target.y, 'cube').setOrigin(0);
         this.Body.scale = 0.25;
-        this.BodyPartGroup.add(this.Body);
+        this.BodyPartGroup = BodyPartGroup;
+        BodyPartGroup.add(this.Body);
     }
 
     public DiffPosition() {
         const isTargetEnabled = this.target.body.enable;
-
         if (isTargetEnabled && (this.target.x !== this.lastTargetPosition.x || this.target.y !== this.lastTargetPosition.y)) {
             this.Body.setPosition(this.lastTargetPosition.x, this.lastTargetPosition.y)
             this.lastTargetPosition.x = this.target.x
@@ -40,7 +39,8 @@ export class BodyPart extends Phaser.GameObjects.Sprite {
     }
     public addBody() {
         if (!this.tailPart) {
-            this.tailPart = new BodyPart(this.snakeScene, this.Body);
+            this.tailPart = new BodyPart(this.snakeScene, this.Body, this.BodyPartGroup);
+            this.BodyPartGroup.add(this.Body);
         } else {
             this.tailPart.addBody();
         }
@@ -49,6 +49,15 @@ export class BodyPart extends Phaser.GameObjects.Sprite {
         this.Body.setTint(color);
         if (this.tailPart) {
             this.tailPart.setColor(color);
+        }
+    }
+    collidesBody(): ArcadePhysicsCallback {
+        console.log('wow')
+        return (player, Body) => {
+            if (this.snakeScene.GameStarting === 1) {
+                console.log('cc')
+                this.snakeScene.gameOver.show();
+            }
         }
     }
 }
