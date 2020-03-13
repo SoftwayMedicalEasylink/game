@@ -31,7 +31,7 @@ export class SnakeScene extends Phaser.Scene {
   Scores: Scores;
   BodyPart: BodyPart
   availableColors = ['#00ff00', '#0033cc', '#ff00ff', '#ff6600', '#ff0000', '#888888', '#009900', '#990099'];
-  availableHastags = ["#CULTURECLIENT", "#EXPERTISE", "#HONETETE", "#AUDACE", "#SENSDEL'ENGAGEMENT", "ESPRITD'EQUIPE"]
+  availableHastags = ["#CULTURECLIENT", "#EXPERTISE", "#HONNETETE", "#AUDACE", "#SENSDEL'ENGAGEMENT", "#ESPRITD'EQUIPE"]
   word: string | any[];
   Nword = 0;
   WordText: Phaser.GameObjects.Text;
